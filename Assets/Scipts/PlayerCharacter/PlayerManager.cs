@@ -111,7 +111,6 @@ public class PlayerManager : MonoBehaviour
                 leftDashStartTime = 0;
                 rightDashEndTime = 0;
                 rightDashStartTime = 0;
-
             }
             return;
         }
@@ -150,9 +149,14 @@ public class PlayerManager : MonoBehaviour
 
     public void GoLeftPlayer1(InputAction.CallbackContext context)
     {
+        CheckForDashLeft1(context);
+        GoLeft(context);
+    }
+    private void CheckForDashLeft1(InputAction.CallbackContext context)
+    {
         if (context.performed)
         {
-            if(leftDashStartTime > 0 &&
+            if (leftDashStartTime > 0 &&
                leftDashEndTime - leftDashStartTime < DOUBLE_TAP_TOTAL_TRESHOLD &&
                context.time - leftDashEndTime < DOUBLE_TAP_BETWEEN_TAPS_TRESHOLD &&
                Time.time - player1DashTime > DASH_COOLDOWN_CONST)
@@ -161,10 +165,14 @@ public class PlayerManager : MonoBehaviour
         }
         if (context.canceled)
             leftDashEndTime = context.time;
-        GoLeft(context);
     }
 
     public void GoLeftPlayer2(InputAction.CallbackContext context)
+    {
+        CheckForDashLeft2(context);
+        GoLeft(context);
+    }
+    private void CheckForDashLeft2(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
@@ -177,10 +185,14 @@ public class PlayerManager : MonoBehaviour
         }
         if (context.canceled)
             leftArrowDashEndTime = context.time;
-        GoLeft(context);
     }
 
     public void GoRightPlayer1(InputAction.CallbackContext context)
+    {
+        CheckForDashRight1(context);
+        GoRight(context);
+    }
+    private void CheckForDashRight1(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
@@ -193,10 +205,13 @@ public class PlayerManager : MonoBehaviour
         }
         if (context.canceled)
             rightDashEndTime = context.time;
+    }
+    public void GoRightPlayer2(InputAction.CallbackContext context)
+    {
+        CheckForDashRight2(context);
         GoRight(context);
     }
-
-    public void GoRightPlayer2(InputAction.CallbackContext context)
+    private void CheckForDashRight2(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
@@ -209,7 +224,6 @@ public class PlayerManager : MonoBehaviour
         }
         if (context.canceled)
             rightArrowDashEndTime = context.time;
-        GoRight(context);
     }
 
     public void JumpPlayer1(InputAction.CallbackContext context)
@@ -258,19 +272,6 @@ public class PlayerManager : MonoBehaviour
             movementType = newState;
             movementType.Enter();
         }
-    }
-
-    public void Slam()
-    {
-        if (isDashingLeft || isDashingRight) return;
-
-        isSlamming = true;
-
-        player1Slamming = false;
-        player2Slamming = false;
-
-        playerRigidBody.velocity = Vector3.zero;
-        playerRigidBody.AddForce(Vector3.down * slamForce, ForceMode2D.Impulse);
     }
 
     public void OnCollisionEnter2D(Collision2D collision)
@@ -323,8 +324,6 @@ public class PlayerManager : MonoBehaviour
         dashingTimeElapsed = 0f;
         playerRigidBody.velocity = Vector3.zero;
         playerRigidBody.gravityScale = 0f;
-
-        //playerRigidBody.AddForce(Vector2.left * dashForce, ForceMode2D.Impulse);
     }
     public void RightDash()
     {
@@ -333,8 +332,6 @@ public class PlayerManager : MonoBehaviour
         dashingTimeElapsed = 0f;
         playerRigidBody.velocity = Vector3.zero;
         playerRigidBody.gravityScale = 0f;
-
-        //playerRigidBody.AddForce(Vector2.right * dashForce, ForceMode2D.Impulse);
     }
     public void LeftDashArrow()
     {
@@ -343,9 +340,6 @@ public class PlayerManager : MonoBehaviour
         dashingTimeElapsed = 0f;
         playerRigidBody.velocity = Vector3.zero;
         playerRigidBody.gravityScale = 0f;
-
-        //playerRigidBody.AddForce(Vector2.left * dashForce, ForceMode2D.Impulse);
-
     }
     public void RightDashArrow()
     {
@@ -354,8 +348,5 @@ public class PlayerManager : MonoBehaviour
         dashingTimeElapsed = 0f;
         playerRigidBody.velocity = Vector3.zero;
         playerRigidBody.gravityScale = 0f;
-
-
-        //playerRigidBody.AddForce(Vector2.right * dashForce, ForceMode2D.Impulse);
     }
 }
