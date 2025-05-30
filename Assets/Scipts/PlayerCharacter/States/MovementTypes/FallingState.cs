@@ -1,16 +1,20 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class JumpingState : MovementTypeState
+public class FallingState : MovementTypeState
 {
     public void Enter()
     {
-        Jump();
+        Debug.Log("Aaaaaaaaaaaaaa");
+        PlayerManager.Instance.animator.SetBool("isGrounded", true);
     }
 
     public void Exit()
     {
-        return;
+        PlayerManager.Instance.animator.SetBool("isGrounded", true);
     }
 
     public void Jump()
@@ -21,9 +25,10 @@ public class JumpingState : MovementTypeState
 
     public MovementTypeState JumpPlayer1(InputAction.CallbackContext context)
     {
-        if (context.performed && !PlayerManager.Instance.player1Jumped)
+        if(context.performed && !PlayerManager.Instance.player1Jumped)
         {
             PlayerManager.Instance.player1Jumped = true;
+            Jump();
             return new JumpingState();
         }
         return null;
@@ -34,6 +39,7 @@ public class JumpingState : MovementTypeState
         if (context.performed && !PlayerManager.Instance.player2Jumped)
         {
             PlayerManager.Instance.player2Jumped = true;
+            Jump();
             return new JumpingState();
         }
         return null;
@@ -44,7 +50,7 @@ public class JumpingState : MovementTypeState
         if (context.performed)
         {
             PlayerManager.Instance.player1Slamming = true;
-            if(PlayerManager.Instance.player2Slamming)
+            if (PlayerManager.Instance.player2Slamming)
                 return new SlammingState();
         }
         if (context.canceled)
@@ -67,9 +73,12 @@ public class JumpingState : MovementTypeState
 
     public MovementTypeState Update()
     {
-        if (PlayerManager.Instance.playerRigidBody.velocity.y <= 0)
-            return new FallingState();
-
+        RaycastHit2D hit = Physics2D.BoxCast(PlayerManager.Instance.playerTransform.position, 
+            PlayerManager.Instance.groundedBoxCast, 0f, Vector2.down, 0.01f, PlayerManager.Instance.groundLayerMask);
+        if (hit.collider != null && hit.normal.y > 0.99f)
+        {
+            return new GroundedState();
+        }
         return null;
     }
 }

@@ -4934,11 +4934,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1807553569557943737, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
       propertyPath: DOUBLE_TAP_TOTAL_TRESHOLD
-      value: 0.4
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 1807553569557943737, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
       propertyPath: DOUBLE_TAP_BETWEEN_TAPS_TRESHOLD
-      value: 0.2
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 4196571894604469800, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
       propertyPath: m_Name

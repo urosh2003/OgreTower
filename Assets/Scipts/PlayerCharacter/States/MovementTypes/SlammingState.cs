@@ -3,17 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class GroundedState : MovementTypeState
+public class SlammingState : MovementTypeState
 {
     public void Enter()
     {
-        Debug.Log("Landed");
-        PlayerManager.Instance.player1Jumped = false;
-        PlayerManager.Instance.player2Jumped = false;
-        PlayerManager.Instance.player1Slamming = false;
-        PlayerManager.Instance.player2Slamming = false;
-        PlayerManager.Instance.isSlamming = false;
-        PlayerManager.Instance.animator.SetBool("isGrounded", true);
+        Slam();
     }
 
     public void Exit()
@@ -23,27 +17,19 @@ public class GroundedState : MovementTypeState
 
     public MovementTypeState JumpPlayer1(InputAction.CallbackContext context)
     {
-        if(context.performed)
-        {
-            PlayerManager.Instance.player1Jumped = true;
-            return new JumpingState();
-        }
         return null;
     }
 
     public MovementTypeState JumpPlayer2(InputAction.CallbackContext context)
     {
-        if (context.performed)
-        {
-            PlayerManager.Instance.player2Jumped = true;
-            return new JumpingState();
-        }
         return null;
     }
 
     public void Slam()
     {
-        throw new System.NotImplementedException();
+        PlayerManager.Instance.isSlamming = true;
+        PlayerManager.Instance.playerRigidBody.velocity = Vector3.zero;
+        PlayerManager.Instance.playerRigidBody.AddForce(Vector3.down * PlayerManager.Instance.slamForce, ForceMode2D.Impulse);
     }
 
     public MovementTypeState SlamPlayer1(InputAction.CallbackContext context)
@@ -58,6 +44,12 @@ public class GroundedState : MovementTypeState
 
     public MovementTypeState Update()
     {
+        RaycastHit2D hit = Physics2D.BoxCast(PlayerManager.Instance.playerTransform.position,
+            PlayerManager.Instance.groundedBoxCast, 0f, Vector2.down, 0.01f, PlayerManager.Instance.groundLayerMask);
+        if (hit.collider != null && hit.normal.y > 0.99f)
+        {
+            return new GroundedState();
+        }
         return null;
     }
 }

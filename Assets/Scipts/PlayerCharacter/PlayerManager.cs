@@ -8,7 +8,7 @@ public class PlayerManager : MonoBehaviour
     public static PlayerManager Instance;
 
     [SerializeField] private Vector2 movementVector;
-    private Transform playerTransform;
+    public Transform playerTransform;
     [SerializeField] public float walkingSpeed;
     [SerializeField] public float runningSpeed;
     public Rigidbody2D playerRigidBody;
@@ -30,8 +30,8 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] public float slamForce;
     [SerializeField] public float dashSpeed;
 
-    [SerializeField] LayerMask groundLayerMask;
-    [SerializeField] Vector2 groundedBoxCast;
+    [SerializeField] public LayerMask groundLayerMask;
+    [SerializeField] public Vector2 groundedBoxCast;
 
     [SerializeField] float DOUBLE_TAP_BETWEEN_TAPS_TRESHOLD = 0.2f;
     [SerializeField] float DOUBLE_TAP_TOTAL_TRESHOLD = 0.4f;
@@ -118,29 +118,13 @@ public class PlayerManager : MonoBehaviour
         else
         {
             movementDirection.Update();
-        }
-
-        if (playerRigidBody.velocity.y <= 0.1f && playerRigidBody.velocity.y >= -0.1f)
-        {
-            RaycastHit2D hit = Physics2D.BoxCast(playerTransform.position, groundedBoxCast, 0f, Vector2.down, 0.01f, groundLayerMask);
-            if (hit.collider != null && hit.normal.y > 0.99f)
+            MovementTypeState newState = movementType.Update();
+            if (newState != null)
             {
-                isGrounded = true;
-                player1Jumped = false;
-                player2Jumped = false;
-                isSlamming = false;
+                movementType.Exit();
+                movementType = newState;
+                movementType.Enter();
             }
-            else
-                isGrounded = false;
-        }
-        else
-        {
-            isGrounded = false;
-        }
-
-        if(player1Slamming && player2Slamming && !isGrounded)
-        {
-            Slam();
         }
     }
     public void GoLeft(InputAction.CallbackContext context)
@@ -256,25 +240,23 @@ public class PlayerManager : MonoBehaviour
 
     public void SlamPlayer1(InputAction.CallbackContext context)
     {
-        if (context.performed && !isSlamming)
+        MovementTypeState newState = movementType.SlamPlayer1(context);
+        if (newState != null)
         {
-            player1Slamming = true;
-        }
-        if(context.canceled)
-        {
-            player1Slamming = false;
+            movementType.Exit();
+            movementType = newState;
+            movementType.Enter();
         }
     }
 
     public void SlamPlayer2(InputAction.CallbackContext context)
     {
-        if (context.performed && !isSlamming)
+        MovementTypeState newState = movementType.SlamPlayer2(context);
+        if (newState != null)
         {
-            player2Slamming = true;
-        }
-        if (context.canceled)
-        {
-            player2Slamming = false;
+            movementType.Exit();
+            movementType = newState;
+            movementType.Enter();
         }
     }
 
