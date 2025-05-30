@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerManager : MonoBehaviour
 {
+    public static PlayerManager Instance;
+
     [SerializeField] private Vector2 movementVector;
     private Transform playerTransform;
-    [SerializeField] private float movementSpeed;
-    private Rigidbody2D playerRigidBody;
+    [SerializeField] public float walkingSpeed;
+    [SerializeField] public float runningSpeed;
+    public Rigidbody2D playerRigidBody;
 
     public bool player1Left;
     public bool player1Right;
@@ -57,7 +60,14 @@ public class PlayerMovement : MonoBehaviour
     private float player1DashTime;
     private float player2DashTime;
 
-    private Animator animator;
+    public Animator animator;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    public MovementDirectionState movementDirection;
 
     // Start is called before the first frame update
     void Start()
@@ -67,11 +77,15 @@ public class PlayerMovement : MonoBehaviour
         playerRigidBody = GetComponent<Rigidbody2D>();
         animator = gameObject.GetComponentInChildren<Animator>();
         gravityScale = playerRigidBody.gravityScale;
+        movementDirection = new IdleState();
+        movementDirection.Enter();
     }
 
     // Update is called once per frame
     void Update()
     {
+        
+
         if(isDashingLeft || isDashingRight)
         {
             dashingTimeElapsed += Time.deltaTime;
@@ -99,43 +113,8 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
-
-        playerRigidBody.velocity = new Vector2(movementSpeed * movementVector.x, playerRigidBody.velocity.y);
-
-        switch(movementVector.x)
-        {
-            case 0:
-                animator.SetBool("IsWalkingRight", false);
-                animator.SetBool("IsWalkingLeft", false);
-                animator.SetBool("IsRunningRight", false);
-                animator.SetBool("IsRunningLeft", false);
-                break;
-            case 1:
-                animator.SetBool("IsWalkingRight", true);
-                animator.SetBool("IsWalkingLeft", false);
-                animator.SetBool("IsRunningRight", false);
-                animator.SetBool("IsRunningLeft", false);
-                break;
-            case -1:
-                animator.SetBool("IsWalkingRight", false);
-                animator.SetBool("IsWalkingLeft", true);
-                animator.SetBool("IsRunningRight", false);
-                animator.SetBool("IsRunningLeft", false);   
-                break;
-            case 2:
-                animator.SetBool("IsWalkingRight", false);
-                animator.SetBool("IsWalkingLeft", false);
-                animator.SetBool("IsRunningRight", true);
-                animator.SetBool("IsRunningLeft", false);
-                break;
-            case -2:
-                animator.SetBool("IsWalkingRight", false);
-                animator.SetBool("IsWalkingLeft", false);
-                animator.SetBool("IsRunningRight", false);
-                animator.SetBool("IsRunningLeft", true);
-                break;
-        }
-
+        else
+            movementDirection.Update();
 
         if (playerRigidBody.velocity.y <= 0.1f && playerRigidBody.velocity.y >= -0.1f)
         {
@@ -160,133 +139,89 @@ public class PlayerMovement : MonoBehaviour
             Slam();
         }
     }
+    public void GoLeft(InputAction.CallbackContext context)
+    {
+        MovementDirectionState newState = movementDirection.GoLeft(context);
+        if(newState != null)
+        {
+            movementDirection.Exit();
+            movementDirection = newState;
+            movementDirection.Enter();
+        }
+    }
+    public void GoRight(InputAction.CallbackContext context)
+    {
+        MovementDirectionState newState = movementDirection.GoRight(context);
+        if (newState != null)
+        {
+            movementDirection.Exit();
+            movementDirection = newState;
+            movementDirection.Enter();
+        }
+    }
 
     public void GoLeftPlayer1(InputAction.CallbackContext context)
     {
-        if (context.canceled && player1Left)
+        if (context.performed)
         {
-            player1Left = false;
-            movementVector -= Vector2.left;
-            leftDashEndTime = context.time;
-        }
-
-        if (isDashingLeft || isDashingRight) return;
-
-        //if (isSlamming) return;
-
-        if(context.performed)
-        {
-            movementVector += Vector2.left;
-            player1Left = true;
-
-            if (leftDashStartTime > 0)
-            {
-                if(leftDashEndTime - leftDashStartTime < DOUBLE_TAP_TOTAL_TRESHOLD &&
-                    context.time - leftDashEndTime < DOUBLE_TAP_BETWEEN_TAPS_TRESHOLD &&
-                    Time.time - player1DashTime > DASH_COOLDOWN_CONST)
-                {
-                    LeftDash();
-                    return;
-                }
-            }
+            if(leftDashStartTime > 0 &&
+               leftDashEndTime - leftDashStartTime < DOUBLE_TAP_TOTAL_TRESHOLD &&
+               context.time - leftDashEndTime < DOUBLE_TAP_BETWEEN_TAPS_TRESHOLD &&
+               Time.time - player1DashTime > DASH_COOLDOWN_CONST)
+                LeftDash();
             leftDashStartTime = context.time;
-
         }
-
+        if (context.canceled)
+            leftDashEndTime = context.time;
+        GoLeft(context);
     }
 
     public void GoLeftPlayer2(InputAction.CallbackContext context)
     {
-        if (context.canceled && player2Left)
-        {
-            player2Left = false;
-            movementVector -= Vector2.left;
-            leftArrowDashEndTime = context.time;
-        }
-
-        if (isDashingLeft || isDashingRight) return;
-
         if (context.performed)
         {
-            movementVector += Vector2.left;
-            player2Left = true;
-            if (leftArrowDashStartTime > 0)
-            {
-                if (leftArrowDashEndTime - leftArrowDashStartTime < DOUBLE_TAP_TOTAL_TRESHOLD &&
-                    context.time - leftArrowDashEndTime < DOUBLE_TAP_BETWEEN_TAPS_TRESHOLD &&
-                    Time.time - player2DashTime > DASH_COOLDOWN_CONST)
-                {
-                    LeftDashArrow();
-
-                }
-            }
+            if (leftArrowDashStartTime > 0 &&
+               leftArrowDashEndTime - leftArrowDashStartTime < DOUBLE_TAP_TOTAL_TRESHOLD &&
+               context.time - leftArrowDashEndTime < DOUBLE_TAP_BETWEEN_TAPS_TRESHOLD &&
+               Time.time - player2DashTime > DASH_COOLDOWN_CONST)
+                LeftDashArrow();
             leftArrowDashStartTime = context.time;
         }
-        
+        if (context.canceled)
+            leftArrowDashEndTime = context.time;
+        GoLeft(context);
     }
 
     public void GoRightPlayer1(InputAction.CallbackContext context)
     {
-        if (context.canceled && player1Right)
-        {
-            player1Right = false;
-            movementVector -= Vector2.right;
-            rightDashEndTime = context.time;
-        }
-
-        if (isDashingLeft || isDashingRight) return;
-
-        //if (isSlamming) return;
-
         if (context.performed)
         {
-            movementVector += Vector2.right;
-            player1Right = true;
-            if (rightDashStartTime > 0)
-            {
-                if (rightDashEndTime - rightDashStartTime < DOUBLE_TAP_TOTAL_TRESHOLD &&
-                    context.time - rightDashEndTime < DOUBLE_TAP_BETWEEN_TAPS_TRESHOLD &&
-                    Time.time - player1DashTime > DASH_COOLDOWN_CONST)
-                {
-                    RightDash();
-
-                }
-            }
+            if (rightDashStartTime > 0 &&
+               rightDashEndTime - rightDashStartTime < DOUBLE_TAP_TOTAL_TRESHOLD &&
+               context.time - rightDashEndTime < DOUBLE_TAP_BETWEEN_TAPS_TRESHOLD &&
+               Time.time - player1DashTime > DASH_COOLDOWN_CONST)
+                RightDash();
             rightDashStartTime = context.time;
         }
-        
+        if (context.canceled)
+            rightDashEndTime = context.time;
+        GoRight(context);
     }
 
     public void GoRightPlayer2(InputAction.CallbackContext context)
     {
-        if (context.canceled && player2Right)
-        {
-            player2Right = false;
-            movementVector -= Vector2.right;
-            rightArrowDashEndTime = context.time;
-        }
-
-        if (isDashingLeft || isDashingRight) return;
-
-        //if (isSlamming) return;
-
         if (context.performed)
         {
-            movementVector += Vector2.right;
-            player2Right = true;
-            if (rightArrowDashStartTime > 0)
-            {
-                if (rightArrowDashEndTime - rightArrowDashStartTime < DOUBLE_TAP_TOTAL_TRESHOLD &&
-                    context.time - rightArrowDashEndTime < DOUBLE_TAP_BETWEEN_TAPS_TRESHOLD &&
-                    Time.time - player2DashTime > DASH_COOLDOWN_CONST)
-                {
-                    RightDashArrow();
-
-                }
-            }
+            if (rightArrowDashStartTime > 0 &&
+               rightArrowDashEndTime - rightArrowDashStartTime < DOUBLE_TAP_TOTAL_TRESHOLD &&
+               context.time - rightArrowDashEndTime < DOUBLE_TAP_BETWEEN_TAPS_TRESHOLD &&
+               Time.time - player2DashTime > DASH_COOLDOWN_CONST)
+                RightDashArrow();
             rightArrowDashStartTime = context.time;
         }
-        
+        if (context.canceled)
+            rightArrowDashEndTime = context.time;
+        GoRight(context);
     }
 
     public void JumpPlayer1(InputAction.CallbackContext context)
