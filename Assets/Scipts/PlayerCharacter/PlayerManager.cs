@@ -21,14 +21,14 @@ public class PlayerManager : MonoBehaviour
     public bool isGrounded;
     public bool player1Jumped;
     public bool player2Jumped;
-    [SerializeField] private float jumpForce;
+    [SerializeField] public float jumpForce;
 
     public bool player1Slamming;
     public bool player2Slamming;
     public bool isSlamming;
 
-    [SerializeField] private float slamForce;
-    [SerializeField] private float dashSpeed;
+    [SerializeField] public float slamForce;
+    [SerializeField] public float dashSpeed;
 
     [SerializeField] LayerMask groundLayerMask;
     [SerializeField] Vector2 groundedBoxCast;
@@ -68,6 +68,7 @@ public class PlayerManager : MonoBehaviour
     }
 
     public MovementDirectionState movementDirection;
+    public MovementTypeState movementType;
 
     // Start is called before the first frame update
     void Start()
@@ -79,14 +80,15 @@ public class PlayerManager : MonoBehaviour
         gravityScale = playerRigidBody.gravityScale;
         movementDirection = new IdleState();
         movementDirection.Enter();
+        movementType = new GroundedState();
+        movementDirection.Enter();
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-
-        if(isDashingLeft || isDashingRight)
+        if (isDashingLeft || isDashingRight)
         {
             dashingTimeElapsed += Time.deltaTime;
 
@@ -101,20 +103,22 @@ public class PlayerManager : MonoBehaviour
                 isDashingRight = false;
                 playerRigidBody.gravityScale = gravityScale;
                 playerRigidBody.velocity = Vector2.zero;
-                leftArrowDashEndTime = 0; 
+                leftArrowDashEndTime = 0;
                 leftArrowDashStartTime = 0;
-                rightArrowDashEndTime = 0; 
+                rightArrowDashEndTime = 0;
                 rightArrowDashStartTime = 0;
-                leftDashEndTime = 0; 
+                leftDashEndTime = 0;
                 leftDashStartTime = 0;
-                rightDashEndTime = 0;  
+                rightDashEndTime = 0;
                 rightDashStartTime = 0;
-                
+
             }
             return;
         }
         else
+        {
             movementDirection.Update();
+        }
 
         if (playerRigidBody.velocity.y <= 0.1f && playerRigidBody.velocity.y >= -0.1f)
         {
@@ -228,13 +232,12 @@ public class PlayerManager : MonoBehaviour
     {
         if (isDashingLeft || isDashingRight) return;
 
-        if (isSlamming || player1Jumped) return;
-
-        if (context.performed)
+        MovementTypeState newState = movementType.JumpPlayer1(context);
+        if (newState != null)
         {
-            player1Jumped = true;
-            playerRigidBody.velocity = Vector3.zero;
-            playerRigidBody.AddForce(Vector3.up * jumpForce, ForceMode2D.Impulse);
+            movementType.Exit();
+            movementType = newState;
+            movementType.Enter();
         }
     }
 
@@ -242,13 +245,12 @@ public class PlayerManager : MonoBehaviour
     {
         if (isDashingLeft || isDashingRight) return;
 
-        if (isSlamming || player2Jumped) return;
-
-        if (context.performed)
+        MovementTypeState newState = movementType.JumpPlayer2(context);
+        if (newState != null)
         {
-            player2Jumped = true;
-            playerRigidBody.velocity = Vector3.zero;
-            playerRigidBody.AddForce(Vector3.up * jumpForce, ForceMode2D.Impulse);
+            movementType.Exit();
+            movementType = newState;
+            movementType.Enter();
         }
     }
 

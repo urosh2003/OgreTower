@@ -4708,7 +4708,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!60 &2045597269
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -4872,9 +4872,53 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 669724229327020363, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: GoLeftPlayer1
+      objectReference: {fileID: 0}
+    - target: {fileID: 669724229327020363, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
+      propertyPath: m_ActionEvents.Array.data[3].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: GoRightPlayer1
+      objectReference: {fileID: 0}
+    - target: {fileID: 669724229327020363, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
+      propertyPath: m_ActionEvents.Array.data[6].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: GoLeftPlayer2
+      objectReference: {fileID: 0}
+    - target: {fileID: 669724229327020363, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
+      propertyPath: m_ActionEvents.Array.data[7].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: GoRightPlayer2
+      objectReference: {fileID: 0}
+    - target: {fileID: 669724229327020363, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PlayerManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 669724229327020363, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
+      propertyPath: m_ActionEvents.Array.data[3].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PlayerManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 669724229327020363, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
+      propertyPath: m_ActionEvents.Array.data[6].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PlayerManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 669724229327020363, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
+      propertyPath: m_ActionEvents.Array.data[7].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PlayerManager, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 1807553569557943737, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
       propertyPath: dashSpeed
       value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 1807553569557943737, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
+      propertyPath: player2Right
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1807553569557943737, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
+      propertyPath: runningSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1807553569557943737, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
+      propertyPath: walkingSpeed
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1807553569557943737, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
       propertyPath: movementSpeed
@@ -4890,15 +4934,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1807553569557943737, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
       propertyPath: DOUBLE_TAP_TOTAL_TRESHOLD
-      value: 0.2
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 1807553569557943737, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
       propertyPath: DOUBLE_TAP_BETWEEN_TAPS_TRESHOLD
-      value: 0.1
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 4196571894604469800, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
       propertyPath: m_Name
       value: PlayerCharacter
+      objectReference: {fileID: 0}
+    - target: {fileID: 6260051784108424406, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
+      propertyPath: m_BodyType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6260051784108424406, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
+      propertyPath: m_LinearDrag
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6260051784108424406, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
+      propertyPath: m_AngularDrag
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6260051784108424406, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
+      propertyPath: m_GravityScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6260051784108424406, guid: a3e85d6e4967cb74ab474aaa814b1703, type: 3}
       propertyPath: m_SleepingMode
