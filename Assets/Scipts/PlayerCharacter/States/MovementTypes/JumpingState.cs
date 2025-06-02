@@ -15,8 +15,7 @@ public class JumpingState : MovementTypeState
 
     public void Jump()
     {
-        PlayerManager.Instance.playerRigidBody.velocity = Vector3.zero;
-        PlayerManager.Instance.playerRigidBody.AddForce(Vector3.up * PlayerManager.Instance.jumpForce, ForceMode2D.Impulse);
+        PlayerManager.Instance.playerRigidBody.velocity = new Vector2(PlayerManager.Instance.playerRigidBody.velocity.x, PlayerManager.Instance.jumpForce);
     }
 
     public MovementTypeState JumpPlayer1(InputAction.CallbackContext context)
@@ -67,9 +66,17 @@ public class JumpingState : MovementTypeState
 
     public MovementTypeState Update()
     {
-        if (PlayerManager.Instance.playerRigidBody.velocity.y <= 0)
+        Debug.Log(PlayerManager.Instance.playerRigidBody.velocity);
+        PlayerManager.Instance.playerRigidBody.velocity += new Vector2(0, 
+            Time.deltaTime * PlayerManager.Instance.gravityScale);
+
+        if (PlayerManager.Instance.playerRigidBody.velocity.y <= 0.001f)
             return new FallingState();
 
         return null;
+    }
+    public MovementTypeState BounceOff()
+    {
+        return new JumpingState();
     }
 }

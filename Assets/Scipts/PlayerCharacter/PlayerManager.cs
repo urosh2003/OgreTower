@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -55,12 +56,17 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private float DASH_DURATION_CONST = 0.2f;
     [SerializeField] private float DASH_COOLDOWN_CONST = 4f;
 
-    private float gravityScale;
+    public float gravityScale;
+    public float fallingGravity;
 
     private float player1DashTime;
     private float player2DashTime;
 
     public Animator animator;
+    public static event Action movementDirectionChanged;
+    public static event Action jumped;
+    public static event Action<float> hasGrounded;
+    public bool canDash;
 
     private void Awake()
     {
@@ -77,7 +83,6 @@ public class PlayerManager : MonoBehaviour
         playerTransform = transform;
         playerRigidBody = GetComponent<Rigidbody2D>();
         animator = gameObject.GetComponentInChildren<Animator>();
-        gravityScale = playerRigidBody.gravityScale;
         movementDirection = new IdleState();
         movementDirection.Enter();
         movementType = new GroundedState();
@@ -101,8 +106,7 @@ public class PlayerManager : MonoBehaviour
             {
                 isDashingLeft = false;
                 isDashingRight = false;
-                playerRigidBody.gravityScale = gravityScale;
-                playerRigidBody.velocity = Vector2.zero;
+                //playerRigidBody.velocity = Vector2.zero;
                 leftArrowDashEndTime = 0;
                 leftArrowDashStartTime = 0;
                 rightArrowDashEndTime = 0;
@@ -126,6 +130,12 @@ public class PlayerManager : MonoBehaviour
             }
         }
     }
+
+    public void Grounded()
+    {
+        hasGrounded.Invoke(transform.position.y);
+    }
+
     public void GoLeft(InputAction.CallbackContext context)
     {
         MovementDirectionState newState = movementDirection.GoLeft(context);
@@ -134,6 +144,7 @@ public class PlayerManager : MonoBehaviour
             movementDirection.Exit();
             movementDirection = newState;
             movementDirection.Enter();
+            movementDirectionChanged.Invoke();
         }
     }
     public void GoRight(InputAction.CallbackContext context)
@@ -144,12 +155,14 @@ public class PlayerManager : MonoBehaviour
             movementDirection.Exit();
             movementDirection = newState;
             movementDirection.Enter();
+            movementDirectionChanged.Invoke();
         }
     }
 
     public void GoLeftPlayer1(InputAction.CallbackContext context)
     {
-        CheckForDashLeft1(context);
+        if (canDash)
+            CheckForDashLeft1(context);
         GoLeft(context);
     }
     private void CheckForDashLeft1(InputAction.CallbackContext context)
@@ -169,7 +182,8 @@ public class PlayerManager : MonoBehaviour
 
     public void GoLeftPlayer2(InputAction.CallbackContext context)
     {
-        CheckForDashLeft2(context);
+        if (canDash)
+            CheckForDashLeft2(context);
         GoLeft(context);
     }
     private void CheckForDashLeft2(InputAction.CallbackContext context)
@@ -189,7 +203,8 @@ public class PlayerManager : MonoBehaviour
 
     public void GoRightPlayer1(InputAction.CallbackContext context)
     {
-        CheckForDashRight1(context);
+        if (canDash)
+            CheckForDashRight1(context);
         GoRight(context);
     }
     private void CheckForDashRight1(InputAction.CallbackContext context)
@@ -208,7 +223,8 @@ public class PlayerManager : MonoBehaviour
     }
     public void GoRightPlayer2(InputAction.CallbackContext context)
     {
-        CheckForDashRight2(context);
+        if (canDash)
+            CheckForDashRight2(context);
         GoRight(context);
     }
     private void CheckForDashRight2(InputAction.CallbackContext context)
@@ -236,6 +252,7 @@ public class PlayerManager : MonoBehaviour
             movementType.Exit();
             movementType = newState;
             movementType.Enter();
+            jumped.Invoke();
         }
     }
 
@@ -249,6 +266,7 @@ public class PlayerManager : MonoBehaviour
             movementType.Exit();
             movementType = newState;
             movementType.Enter();
+            jumped.Invoke();
         }
     }
 
@@ -280,12 +298,13 @@ public class PlayerManager : MonoBehaviour
         {
             if(isSlamming)
             {
+                isSlamming = false;
                 Destroy(collision.gameObject);
                 playerRigidBody.velocity = Vector3.zero;
-                playerRigidBody.AddForce(Vector3.up * jumpForce * 0.5f, ForceMode2D.Impulse);
                 player1Jumped = false;
                 player2Jumped = false;
-                isSlamming = false;
+                movementType = movementType.BounceOff();
+                movementType.Enter();
             }
             else if(isDashingLeft || isDashingRight)
             {
@@ -296,21 +315,23 @@ public class PlayerManager : MonoBehaviour
                 Destroy(gameObject);
             }
         }
-    }
-
-    public void OnTriggerEnter2D(Collider2D collision)
-    {
         if (collision.gameObject.tag.Equals("JumpPad"))
         {
             if (isSlamming)
             {
+                isSlamming = false;
                 playerRigidBody.velocity = Vector3.zero;
-                playerRigidBody.AddForce(Vector3.up * jumpForce * 1.5f, ForceMode2D.Impulse);
                 player1Jumped = false;
                 player2Jumped = false;
-                isSlamming = false;
+                movementType = movementType.BounceOff();
+                movementType.Enter();
             }
         }
+    }
+
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        
         if (collision.gameObject.tag.Equals("Spike"))
         {
             Destroy(gameObject);

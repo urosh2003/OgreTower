@@ -173,7 +173,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.020950198, y: 0.047143668}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -184,7 +184,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.71771455, y: 0.3951723}
   m_EdgeRadius: 0
 --- !u!50 &1322078589396000937
 Rigidbody2D:
@@ -200,7 +200,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -225,10 +225,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e96323c93ed28f24e86b09495f3c66c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 0
-  moveDurationLow: 0
-  moveDurationHigh: 0
+  movementSpeed: 2
+  moveDurationLow: 2
+  moveDurationHigh: 2
   moveDuration: 0
-  waitDurationLow: 0
-  waitDurationHigh: 0
+  waitDurationLow: 3
+  waitDurationHigh: 3
   waitDuration: 0
+  timeElapsed: 0
+  isMoving: 1
+  staticEnemy: 0

@@ -1,3 +1,4 @@
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class IdleState : MovementDirectionState
@@ -32,6 +33,7 @@ public class IdleState : MovementDirectionState
 
     public void Update()
     {
-        return;
+        PlayerManager.Instance.playerRigidBody.velocity = new Vector2(0, PlayerManager.Instance.playerRigidBody.velocity.y);
+
     }
 }

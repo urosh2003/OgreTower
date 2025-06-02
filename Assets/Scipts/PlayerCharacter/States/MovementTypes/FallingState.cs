@@ -17,18 +17,12 @@ public class FallingState : MovementTypeState
         PlayerManager.Instance.animator.SetBool("isGrounded", true);
     }
 
-    public void Jump()
-    {
-        PlayerManager.Instance.playerRigidBody.velocity = Vector3.zero;
-        PlayerManager.Instance.playerRigidBody.AddForce(Vector3.up * PlayerManager.Instance.jumpForce, ForceMode2D.Impulse);
-    }
 
     public MovementTypeState JumpPlayer1(InputAction.CallbackContext context)
     {
         if(context.performed && !PlayerManager.Instance.player1Jumped)
         {
             PlayerManager.Instance.player1Jumped = true;
-            Jump();
             return new JumpingState();
         }
         return null;
@@ -39,7 +33,6 @@ public class FallingState : MovementTypeState
         if (context.performed && !PlayerManager.Instance.player2Jumped)
         {
             PlayerManager.Instance.player2Jumped = true;
-            Jump();
             return new JumpingState();
         }
         return null;
@@ -73,6 +66,8 @@ public class FallingState : MovementTypeState
 
     public MovementTypeState Update()
     {
+        PlayerManager.Instance.playerRigidBody.velocity += new Vector2(0,
+            PlayerManager.Instance.fallingGravity * Time.deltaTime);
         RaycastHit2D hit = Physics2D.BoxCast(PlayerManager.Instance.playerTransform.position, 
             PlayerManager.Instance.groundedBoxCast, 0f, Vector2.down, 0.01f, PlayerManager.Instance.groundLayerMask);
         if (hit.collider != null && hit.normal.y > 0.99f)
@@ -80,5 +75,9 @@ public class FallingState : MovementTypeState
             return new GroundedState();
         }
         return null;
+    }
+    public MovementTypeState BounceOff()
+    {
+        return new JumpingState();
     }
 }

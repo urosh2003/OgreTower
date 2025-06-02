@@ -1,3 +1,4 @@
+using System;
 using UnityEngine.InputSystem;
 
 public interface MovementTypeState
@@ -9,4 +10,5 @@ public interface MovementTypeState
     public MovementTypeState JumpPlayer2(InputAction.CallbackContext context) ;
     public MovementTypeState SlamPlayer1(InputAction.CallbackContext context) ;
     public MovementTypeState SlamPlayer2(InputAction.CallbackContext context) ;
+    public MovementTypeState BounceOff();
 }

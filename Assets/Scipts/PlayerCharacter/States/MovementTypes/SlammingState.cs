@@ -5,6 +5,11 @@ using UnityEngine.InputSystem;
 
 public class SlammingState : MovementTypeState
 {
+    public MovementTypeState BounceOff()
+    {
+        return new JumpingState();
+    }
+
     public void Enter()
     {
         Slam();
@@ -29,7 +34,6 @@ public class SlammingState : MovementTypeState
     {
         PlayerManager.Instance.isSlamming = true;
         PlayerManager.Instance.playerRigidBody.velocity = Vector3.zero;
-        PlayerManager.Instance.playerRigidBody.AddForce(Vector3.down * PlayerManager.Instance.slamForce, ForceMode2D.Impulse);
     }
 
     public MovementTypeState SlamPlayer1(InputAction.CallbackContext context)
@@ -44,6 +48,9 @@ public class SlammingState : MovementTypeState
 
     public MovementTypeState Update()
     {
+        PlayerManager.Instance.playerRigidBody.velocity += new Vector2(0,
+            PlayerManager.Instance.slamForce * Time.deltaTime);
+
         RaycastHit2D hit = Physics2D.BoxCast(PlayerManager.Instance.playerTransform.position,
             PlayerManager.Instance.groundedBoxCast, 0f, Vector2.down, 0.01f, PlayerManager.Instance.groundLayerMask);
         if (hit.collider != null && hit.normal.y > 0.99f)
