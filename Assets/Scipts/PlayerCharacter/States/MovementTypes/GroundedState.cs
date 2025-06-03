@@ -7,11 +7,8 @@ public class GroundedState : MovementTypeState
 {
     public void Enter()
     {
-        Debug.Log("Landed");
         PlayerManager.Instance.player1Jumped = false;
         PlayerManager.Instance.player2Jumped = false;
-        PlayerManager.Instance.player1Slamming = false;
-        PlayerManager.Instance.player2Slamming = false;
         PlayerManager.Instance.isSlamming = false;
         PlayerManager.Instance.animator.SetBool("isGrounded", true);
         PlayerManager.Instance.Grounded();
@@ -69,6 +66,8 @@ public class GroundedState : MovementTypeState
     }
     public MovementTypeState BounceOff()
     {
+        PlayerManager.Instance.player1Jumped = false;
+        PlayerManager.Instance.player2Jumped = false;
         return new JumpingState();
     }
 }

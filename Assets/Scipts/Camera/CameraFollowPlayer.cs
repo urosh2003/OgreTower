@@ -19,7 +19,6 @@ public class CameraFollowPlayer : MonoBehaviour
     [SerializeField] private float anchorRun;
     [SerializeField] private float snapTime;
     [SerializeField] private float timeElapsedX;
-    [SerializeField] private float timeElapsedY;
     [SerializeField] private float zoomDelay;
     [SerializeField] private float targetY;
     [SerializeField] private float targetYOffset;
@@ -65,18 +64,12 @@ public class CameraFollowPlayer : MonoBehaviour
             return;
         }
 
-        if (y < targetY && Mathf.Abs(y - targetY) > 0.3f) 
-        {    
-            offsetDirection = 1;
-        }
+        if (y < targetY && Mathf.Abs(y - targetY) > 0.3f)  
+            offsetDirection = -1; //Change this to 1 to revert to have both up and down offsets
         else
-        {
             offsetDirection = -1;
 
-        }
-
         targetY = y;
-        timeElapsedY = 0;
     }
 
     // Update is called once per frame

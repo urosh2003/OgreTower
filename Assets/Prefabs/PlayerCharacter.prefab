@@ -49,37 +49,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31ceb832ee344d44fab4fb115e9cc5b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementVector: {x: 0, y: 0}
   playerTransform: {fileID: 0}
   walkingSpeed: 1
   runningSpeed: 3
   playerRigidBody: {fileID: 0}
-  player1Left: 0
-  player1Right: 0
-  player2Left: 0
-  player2Right: 0
   isGrounded: 0
   player1Jumped: 0
   player2Jumped: 0
   jumpForce: 7.385
-  player1Slamming: 0
-  player2Slamming: 0
   isSlamming: 0
   slamForce: -1000
-  dashSpeed: 50
+  dashSpeed: 10
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 64
   groundedBoxCast: {x: 0.5, y: 0.1}
-  DOUBLE_TAP_BETWEEN_TAPS_TRESHOLD: 0.1
-  DOUBLE_TAP_TOTAL_TRESHOLD: 0.2
-  isDashingLeft: 0
-  isDashingRight: 0
-  DASH_DURATION_CONST: 0.06
+  isDashing: 0
+  DASH_DURATION_CONST: 0.2
   DASH_COOLDOWN_CONST: 4
   gravityScale: -17.041
   fallingGravity: -45
   animator: {fileID: 0}
+  canDash: 1
+  lastMovementDirection: -1
 --- !u!114 &669724229327020363
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,26 +114,14 @@ MonoBehaviour:
     m_ActionId: 44e128e5-cb75-44c2-be95-a1a6a6d43a00
     m_ActionName: Keyboard/Jump[/Keyboard/w,/Keyboard/upArrow]
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1807553569557943737}
-        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
-        m_MethodName: SlamPlayer1
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_ActionId: 7f2138f0-6856-416b-bd41-03f79dd00942
     m_ActionName: Keyboard/Slam[/Keyboard/s,/Keyboard/downArrow]
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1807553569557943737}
         m_TargetAssemblyTypeName: PlayerManager, Assembly-CSharp
-        m_MethodName: GoLeftPlayer1
+        m_MethodName: GoLeft
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -157,7 +137,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1807553569557943737}
         m_TargetAssemblyTypeName: PlayerManager, Assembly-CSharp
-        m_MethodName: GoRightPlayer1
+        m_MethodName: GoRight
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -186,26 +166,14 @@ MonoBehaviour:
     m_ActionId: 65a5688a-bfaf-40c3-a8d9-febef4712b2f
     m_ActionName: Keyboard/JumpArrow[/Keyboard/upArrow]
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1807553569557943737}
-        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
-        m_MethodName: SlamPlayer2
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_ActionId: 1429475a-2167-4740-9af1-b92c5d6a2db2
     m_ActionName: Keyboard/SlamArrow[/Keyboard/downArrow]
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1807553569557943737}
         m_TargetAssemblyTypeName: PlayerManager, Assembly-CSharp
-        m_MethodName: GoLeftPlayer2
+        m_MethodName: GoLeft
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -221,7 +189,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1807553569557943737}
         m_TargetAssemblyTypeName: PlayerManager, Assembly-CSharp
-        m_MethodName: GoRightPlayer2
+        m_MethodName: GoRight
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -254,7 +222,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0
   m_GravityScale: 0
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 63c33acfb86806943a5a25f8fc969dbf, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

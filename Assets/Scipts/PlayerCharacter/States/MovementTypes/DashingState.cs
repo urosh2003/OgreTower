@@ -1,10 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class SlammingState : MovementTypeState
+public class DashingState : MovementTypeState
 {
+    private float timeDashing;
+    private float direction;
     public MovementTypeState BounceOff()
     {
         PlayerManager.Instance.player1Jumped = false;
@@ -14,15 +14,17 @@ public class SlammingState : MovementTypeState
 
     public void Enter()
     {
-        PlayerManager.Instance.isSlamming = true;
-        PlayerManager.Instance.playerRigidBody.velocity = Vector3.zero;
-        PlayerManager.Instance.animator.SetBool("isSlamming", true);
+        PlayerManager.Instance.animator.SetBool("isDashing", true);
+        PlayerManager.Instance.isDashing = true;
+        direction = PlayerManager.Instance.lastMovementDirection;
+        
+        timeDashing = 0f;
     }
 
     public void Exit()
     {
-        PlayerManager.Instance.isSlamming = false;
-        PlayerManager.Instance.animator.SetBool("isSlamming", false);
+        PlayerManager.Instance.isDashing = false;
+        PlayerManager.Instance.animator.SetBool("isDashing", false);
     }
 
     public MovementTypeState JumpPlayer1(InputAction.CallbackContext context)
@@ -47,14 +49,11 @@ public class SlammingState : MovementTypeState
 
     public MovementTypeState Update()
     {
-        PlayerManager.Instance.playerRigidBody.velocity += new Vector2(0,
-            PlayerManager.Instance.slamForce * Time.deltaTime);
-
-        RaycastHit2D hit = Physics2D.BoxCast(PlayerManager.Instance.playerTransform.position,
-            PlayerManager.Instance.groundedBoxCast, 0f, Vector2.down, 0.01f, PlayerManager.Instance.groundLayerMask);
-        if (hit.collider != null && hit.normal.y > 0.99f)
+        PlayerManager.Instance.playerRigidBody.velocity = new Vector2(direction * PlayerManager.Instance.dashSpeed, 0);
+        timeDashing += Time.deltaTime;
+        if(timeDashing >= PlayerManager.Instance.DASH_DURATION_CONST)
         {
-            return new GroundedState();
+            return new FallingState();
         }
         return null;
     }

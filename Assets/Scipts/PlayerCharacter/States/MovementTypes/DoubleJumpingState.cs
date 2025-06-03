@@ -1,21 +1,22 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class FallingState : MovementTypeState
+public class DoubleJumpingState : MovementTypeState
 {
     public void Enter()
     {
-        PlayerManager.Instance.animator.SetBool("isGrounded", true);
+        Jump();
     }
 
     public void Exit()
     {
-        PlayerManager.Instance.animator.SetBool("isGrounded", true);
+        return;
     }
 
+    public void Jump()
+    {
+        PlayerManager.Instance.playerRigidBody.velocity = new Vector2(PlayerManager.Instance.playerRigidBody.velocity.x, PlayerManager.Instance.jumpForce);
+    }
 
     public MovementTypeState JumpPlayer1(InputAction.CallbackContext context)
     {
@@ -36,17 +37,17 @@ public class FallingState : MovementTypeState
         }
         return null;
     }
-
     public MovementTypeState Update()
     {
+        Debug.Log(PlayerManager.Instance.playerRigidBody.velocity);
         PlayerManager.Instance.playerRigidBody.velocity += new Vector2(0,
-            PlayerManager.Instance.fallingGravity * Time.deltaTime);
-        RaycastHit2D hit = Physics2D.BoxCast(PlayerManager.Instance.playerTransform.position, 
-            PlayerManager.Instance.groundedBoxCast, 0f, Vector2.down, 0.01f, PlayerManager.Instance.groundLayerMask);
-        if (hit.collider != null && hit.normal.y > 0.99f)
+            Time.deltaTime * PlayerManager.Instance.gravityScale);
+
+        if (PlayerManager.Instance.playerRigidBody.velocity.y <= 0.001f)
         {
-            return new GroundedState();
+            return new SlammingState();
         }
+
         return null;
     }
     public MovementTypeState BounceOff()

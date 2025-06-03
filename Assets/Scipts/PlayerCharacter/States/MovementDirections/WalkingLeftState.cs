@@ -5,6 +5,7 @@ public class WalkingLeftState : MovementDirectionState
 {
     public void Enter()
     {
+        PlayerManager.Instance.lastMovementDirection = -1;
         PlayerManager.Instance.animator.SetBool("walking", true);
         PlayerManager.Instance.animator.SetBool("left", true);
         PlayerManager.Instance.animator.SetBool("right", false);
