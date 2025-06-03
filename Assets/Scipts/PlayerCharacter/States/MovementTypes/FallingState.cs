@@ -8,12 +8,12 @@ public class FallingState : MovementTypeState
 {
     public void Enter()
     {
-        PlayerManager.Instance.animator.SetBool("isGrounded", true);
+        
     }
 
     public void Exit()
     {
-        PlayerManager.Instance.animator.SetBool("isGrounded", true);
+        
     }
 
 

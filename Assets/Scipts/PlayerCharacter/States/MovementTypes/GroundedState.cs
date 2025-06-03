@@ -16,7 +16,7 @@ public class GroundedState : MovementTypeState
 
     public void Exit()
     {
-        PlayerManager.Instance.animator.SetBool("isGrounded", true);
+        PlayerManager.Instance.animator.SetBool("isGrounded", false);
     }
 
     public MovementTypeState JumpPlayer1(InputAction.CallbackContext context)

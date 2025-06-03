@@ -62,6 +62,11 @@ public class PlayerManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(lastMovementDirection == -1)
+            GetComponentInChildren<SpriteRenderer>().flipX = false;
+        else
+            GetComponentInChildren<SpriteRenderer>().flipX = true;
+
         movementDirection.Update();
 
         MovementTypeState newState = movementType.Update();

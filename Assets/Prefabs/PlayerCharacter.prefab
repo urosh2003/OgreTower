@@ -65,12 +65,10 @@ MonoBehaviour:
     m_Bits: 64
   groundedBoxCast: {x: 0.5, y: 0.1}
   isDashing: 0
-  DASH_DURATION_CONST: 0.2
-  DASH_COOLDOWN_CONST: 4
+  DASH_DURATION_CONST: 0.33333334
   gravityScale: -17.041
   fallingGravity: -45
   animator: {fileID: 0}
-  canDash: 1
   lastMovementDirection: -1
 --- !u!114 &669724229327020363
 MonoBehaviour:

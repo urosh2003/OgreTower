@@ -5,11 +5,13 @@ public class JumpingState : MovementTypeState
 {
     public void Enter()
     {
+        PlayerManager.Instance.animator.SetBool("isJumping", true);
         Jump();
     }
 
     public void Exit()
     {
+        PlayerManager.Instance.animator.SetBool("isJumping", false);
         return;
     }
 
