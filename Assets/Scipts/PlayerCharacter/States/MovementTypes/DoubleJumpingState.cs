@@ -5,13 +5,13 @@ public class DoubleJumpingState : MovementTypeState
 {
     public void Enter()
     {
-        PlayerManager.Instance.animator.SetBool("isJumping", true);
+        PlayerManager.Instance.animator.SetBool("isDoubleJumping", true);
         Jump();
     }
 
     public void Exit()
     {
-        PlayerManager.Instance.animator.SetBool("isJumping", false);
+        PlayerManager.Instance.animator.SetBool("isDoubleJumping", false);
         return;
     }
 

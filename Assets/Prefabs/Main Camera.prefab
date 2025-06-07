@@ -70,7 +70,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 4
+  orthographic size: 3.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -151,6 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
+  camera: {fileID: 0}
   maxXDistance: 0
   maxYDistance: 2
   speedIdle: 1
@@ -164,10 +165,18 @@ MonoBehaviour:
   anchorRun: 3
   snapTime: 10
   timeElapsedX: 0
-  timeElapsedY: 0
   zoomDelay: 2
-  targetY: -2
-  targetYOffset: -1.9
-  lerpFactor: 0.02
-  offsetDirection: 0
+  targetY: -42.970024
+  targetYOffset: -2
+  lerpFactor: 0.07
+  offsetDirection: -1
   cameraPlatformThreshold: 1
+  screenShakeDuration: 0.15
+  screenShakeMin: 0
+  screenShakeMax: 0.5
+  shakeDisabled: 0
+  maxShake: 0.3
+  shakeSpeed: 20
+  noiseMagnitude: 0.3
+  seed: {x: 0, y: 0}
+  noiseDirection: {x: 0, y: 0}

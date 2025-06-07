@@ -16,6 +16,7 @@ public class PlayerManager : MonoBehaviour
     public bool isGrounded;
     public bool player1Jumped;
     public bool player2Jumped;
+    public bool introLevel;
     [SerializeField] public float jumpForce;
 
     public bool isSlamming;
@@ -36,7 +37,10 @@ public class PlayerManager : MonoBehaviour
     public Animator animator;
     public static event Action movementDirectionChanged;
     public static event Action jumped;
+    public static event Action slamLanded;
+    public static event Action dashHit;
     public static event Action<float> hasGrounded;
+    public static event Action<Vector2> dashStarted;
     public float lastMovementDirection  = -1;
 
     private void Awake()
@@ -53,6 +57,7 @@ public class PlayerManager : MonoBehaviour
         playerTransform = transform;
         playerRigidBody = GetComponent<Rigidbody2D>();
         animator = gameObject.GetComponentInChildren<Animator>();
+        animator.SetBool("left", true);
         movementDirection = new IdleState();
         movementDirection.Enter();
         movementType = new GroundedState();
@@ -108,6 +113,9 @@ public class PlayerManager : MonoBehaviour
 
     public void JumpPlayer1(InputAction.CallbackContext context)
     {
+        if (introLevel && !isGrounded)
+            return;
+
         MovementTypeState newState = movementType.JumpPlayer1(context);
         if (newState != null)
         {
@@ -120,6 +128,9 @@ public class PlayerManager : MonoBehaviour
 
     public void JumpPlayer2(InputAction.CallbackContext context)
     {
+        if (introLevel && !isGrounded)
+            return;
+
         MovementTypeState newState = movementType.JumpPlayer2(context);
         if (newState != null)
         {
@@ -132,6 +143,8 @@ public class PlayerManager : MonoBehaviour
 
     public void BounceOff()
     {
+        SlamLanded();
+        StartCoroutine(StopGame());
         MovementTypeState newState = movementType.BounceOff();
         if (newState != null)
         {
@@ -140,6 +153,16 @@ public class PlayerManager : MonoBehaviour
             movementType.Enter();
             jumped.Invoke();
         }
+    }
+
+    public void SlamLanded()
+    {
+        slamLanded?.Invoke();
+    }
+
+    public void Dashing(float direction)
+    {
+        dashStarted?.Invoke(new Vector2(direction, 0));
     }
 
     public void OnCollisionEnter2D(Collision2D collision)
@@ -153,18 +176,27 @@ public class PlayerManager : MonoBehaviour
             }
             else if(isDashing)
             {
+                dashHit?.Invoke();
+                StartCoroutine(StopGame());
                 Destroy(collision.gameObject);
             }
             else
             {
-                Destroy(gameObject);
+                CheckpointManager.instance.PlayerDied();
             }
         }
-        if (collision.gameObject.tag.Equals("JumpPad"))
+        if (collision.gameObject.tag.Equals("Obstacle"))
         {
             if (isSlamming)
             {
                 BounceOff();
+                Destroy(collision.gameObject);
+            }
+            else if (isDashing)
+            {
+                dashHit?.Invoke();
+                StartCoroutine(StopGame());
+                Destroy(collision.gameObject);
             }
         }
     }
@@ -174,7 +206,30 @@ public class PlayerManager : MonoBehaviour
         
         if (collision.gameObject.tag.Equals("Spike"))
         {
-            Destroy(gameObject);
+            CheckpointManager.instance.PlayerDied();
         }
+        else if (collision.gameObject.tag.Equals("Checkpoint"))
+        {
+            CheckpointManager.instance.SetChekpoint(collision.transform);
+        }
+        else if (collision.gameObject.tag.Equals("LevelEnd"))
+        {
+            CheckpointManager.instance.NextLevel();
+        }
+        else if (collision.gameObject.tag.Equals("JumpPad"))
+        {
+            BounceOff();
+        }
+    }
+
+    public float hitStopDuration;
+
+    IEnumerator StopGame()
+    {
+        // Stop the game for a set duration
+        float originalTimeScale = Time.timeScale;
+        Time.timeScale = 0;
+        yield return new WaitForSecondsRealtime(hitStopDuration);
+        Time.timeScale = originalTimeScale;
     }
 }

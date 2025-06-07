@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 4196571894604469800}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.55153155, y: -0.83885026, z: 0.013783708}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -53,9 +53,10 @@ MonoBehaviour:
   walkingSpeed: 1
   runningSpeed: 3
   playerRigidBody: {fileID: 0}
-  isGrounded: 0
+  isGrounded: 1
   player1Jumped: 0
   player2Jumped: 0
+  introLevel: 0
   jumpForce: 7.385
   isSlamming: 0
   slamForce: -1000
@@ -65,11 +66,12 @@ MonoBehaviour:
     m_Bits: 64
   groundedBoxCast: {x: 0.5, y: 0.1}
   isDashing: 0
-  DASH_DURATION_CONST: 0.33333334
+  DASH_DURATION_CONST: 0.3333333
   gravityScale: -17.041
   fallingGravity: -45
   animator: {fileID: 0}
   lastMovementDirection: -1
+  hitStopDuration: 0.1
 --- !u!114 &669724229327020363
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,7 +340,7 @@ Transform:
   m_GameObject: {fileID: 5109845779711845934}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.36, z: 0}
+  m_LocalPosition: {x: 0, y: 0.33, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -385,12 +387,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: fd7f3f2b9e9bc22448c040d24767c256, type: 3}
+  m_Sprite: {fileID: -1723376432, guid: 6d417c80e14c8a541b81fae6be0775f3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 2}
+  m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

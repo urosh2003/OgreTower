@@ -7,6 +7,9 @@ TagManager:
   - Enemy
   - JumpPad
   - Spike
+  - Checkpoint
+  - LevelEnd
+  - Obstacle
   layers:
   - Default
   - TransparentFX

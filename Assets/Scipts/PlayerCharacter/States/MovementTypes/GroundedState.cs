@@ -10,12 +10,14 @@ public class GroundedState : MovementTypeState
         PlayerManager.Instance.player1Jumped = false;
         PlayerManager.Instance.player2Jumped = false;
         PlayerManager.Instance.isSlamming = false;
+        PlayerManager.Instance.isGrounded = true;
         PlayerManager.Instance.animator.SetBool("isGrounded", true);
         PlayerManager.Instance.Grounded();
     }
 
     public void Exit()
     {
+        PlayerManager.Instance.isGrounded = false;
         PlayerManager.Instance.animator.SetBool("isGrounded", false);
     }
 
@@ -57,7 +59,7 @@ public class GroundedState : MovementTypeState
     public MovementTypeState Update()
     {
         RaycastHit2D hit = Physics2D.BoxCast(PlayerManager.Instance.playerTransform.position,
-            PlayerManager.Instance.groundedBoxCast, 0f, Vector2.down, 0.01f, PlayerManager.Instance.groundLayerMask);
+            PlayerManager.Instance.groundedBoxCast, 0f, Vector2.down, 0.05f, PlayerManager.Instance.groundLayerMask);
         if (hit.collider != null && hit.normal.y > 0.99f)
         {
             return null;

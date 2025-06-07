@@ -20,7 +20,7 @@ public class RandomMovementEnemy : MonoBehaviour
     [SerializeField] private float timeElapsed;
     [SerializeField] private bool isMoving;
 
-    private Vector2 direction = new Vector2(-1,0);
+    private Vector2 direction;
 
     [SerializeField] private bool staticEnemy;
 
@@ -30,6 +30,7 @@ public class RandomMovementEnemy : MonoBehaviour
         enemyRigidBody = GetComponent<Rigidbody2D>();
         animator = GetComponentInChildren<Animator>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        direction =  new Vector2(-1, 0); 
     }
 
     // Update is called once per frame

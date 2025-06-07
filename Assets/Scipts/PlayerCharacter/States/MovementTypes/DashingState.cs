@@ -17,7 +17,8 @@ public class DashingState : MovementTypeState
         PlayerManager.Instance.animator.SetBool("isDashing", true);
         PlayerManager.Instance.isDashing = true;
         direction = PlayerManager.Instance.lastMovementDirection;
-        
+        PlayerManager.Instance.Dashing(direction);
+
         timeDashing = 0f;
     }
 

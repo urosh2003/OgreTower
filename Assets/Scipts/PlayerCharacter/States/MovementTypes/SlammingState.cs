@@ -14,9 +14,9 @@ public class SlammingState : MovementTypeState
 
     public void Enter()
     {
+        PlayerManager.Instance.animator.SetBool("isSlamming", true);
         PlayerManager.Instance.isSlamming = true;
         PlayerManager.Instance.playerRigidBody.velocity = Vector3.zero;
-        PlayerManager.Instance.animator.SetBool("isSlamming", true);
     }
 
     public void Exit()
@@ -54,6 +54,7 @@ public class SlammingState : MovementTypeState
             PlayerManager.Instance.groundedBoxCast, 0f, Vector2.down, 0.01f, PlayerManager.Instance.groundLayerMask);
         if (hit.collider != null && hit.normal.y > 0.99f)
         {
+            PlayerManager.Instance.SlamLanded();
             return new GroundedState();
         }
         return null;
